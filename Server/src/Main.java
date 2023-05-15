@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.file.Files;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -14,8 +16,6 @@ public class Main {
                     Socket socket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                    out.newLine();
-                    out.flush();
                     while (true) {
                         String line = in.readLine();
                         switch (line){
@@ -27,7 +27,7 @@ public class Main {
                                 int bytesRead;
                                 InputStream inputStream = socket.getInputStream();
                                 // Create a FileOutputStream to write the received data to the text file
-                                FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\don00\\Desktop\\Github\\File-Tranfer\\ServerStorage\\"+fileName[fileName.length-1]);
+                                FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\don00\\Desktop\\ServerStorage\\"+fileName[fileName.length-1]);
 
                                 // Read the binary data sent by the client and write it to the text file
                                 while ((bytesRead = inputStream.read(fileData)) != -1) {
@@ -40,12 +40,31 @@ public class Main {
                                 break;
 
                             case "2":
-                                System.out.println("Client: Download");
-                                String dFileName = in.readLine();
-                                System.out.println(dFileName);
-                                String folderPath = in.readLine();
-                                System.out.println(folderPath);
+                                out.write("File Name to Download with File Type");
+                                out.newLine();
+                                out.flush();
+                                String downloadFile = in.readLine();
+                                String filePath = "C:\\Users\\don00\\Desktop\\ServerStorage\\" + downloadFile;
+                                System.out.println(filePath);
+                                String FolderPath = "C:\\Users\\don00\\Desktop\\ServerStorage";
+                                String fileN = downloadFile;
 
+                                File folder = new File(FolderPath);
+                                File file = new File(folder, fileN);
+                                if(file.exists()){
+                                    out.write("File Found. Downloading...");
+                                    out.newLine();
+                                    out.flush();
+                                    byte[] filed = Files.readAllBytes(file.toPath());
+                                    OutputStream outputStream = socket.getOutputStream();
+                                    outputStream.write(filed);
+                                    outputStream.flush();
+                                }else{
+                                    out.write("File does not exist!");
+                                    out.newLine();
+                                    out.flush();
+                                    break;
+                                }
                                 break;
 
                             case "BYE":
