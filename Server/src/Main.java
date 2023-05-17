@@ -18,7 +18,7 @@ public class Main {
                     try {
                         Socket socket = serverSocket.accept();
                         clientCount++;
-                        System.out.println("Client: " + clientCount + " Connected.");
+                        System.out.println("Client " + clientCount + ": Connected.");
 
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -26,7 +26,7 @@ public class Main {
                             String line = in.readLine();
                             switch (line){
                                 case "1":
-                                    System.out.println("Client: Upload");
+                                    System.out.println("Client "+ clientCount +": Upload");
                                     line = in.readLine();
                                     String[] fileName = line.split("\\\\");
                                     byte[] fileData = new byte[1024];
@@ -36,13 +36,12 @@ public class Main {
                                     FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\don00\\Desktop\\ServerStorage\\"+fileName[fileName.length-1]);
 
                                     // Read the binary data sent by the client and write it to the text file
-                                    while ((bytesRead = inputStream.read(fileData)) != -1) {
-                                        fileOutputStream.write(fileData, 0, bytesRead);
-                                    }
+                                    bytesRead = inputStream.read(fileData);
+                                    fileOutputStream.write(fileData, 0, bytesRead);
 
                                     // Close the FileOutputStream after writing the data
                                     fileOutputStream.close();
-                                    System.out.println("Completed");
+
                                     break;
 
                                 case "2":
@@ -51,7 +50,7 @@ public class Main {
                                     out.flush();
                                     String downloadFile = in.readLine();
                                     String filePath = "C:\\Users\\don00\\Desktop\\ServerStorage\\" + downloadFile;
-                                    System.out.println(filePath);
+
                                     String FolderPath = "C:\\Users\\don00\\Desktop\\ServerStorage";
                                     String fileN = downloadFile;
 
@@ -86,8 +85,10 @@ public class Main {
 
 
                         }
-                    }catch (IOException e){
-                        System.out.println("Client Disconnected");
+                    } catch (SocketException e){
+                        System.out.println("Client "+ clientCount + ": Disconnected");
+                    } catch (IOException e){
+                        System.out.println("Client "+ clientCount + ": Disconnected");
                     }
                 });
 

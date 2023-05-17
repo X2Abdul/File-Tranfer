@@ -64,9 +64,9 @@ public class Main {
                         FileOutputStream fileOutputStream = new FileOutputStream(downloadsPath + "\\" + line);
 
                         // Read the binary data sent by the client and write it to the text file
-                        while ((bytesRead = inputStream.read(fileData)) != -1) {
-                            fileOutputStream.write(fileData, 0, bytesRead);
-                        }
+                        bytesRead = inputStream.read(fileData);
+                        fileOutputStream.write(fileData, 0, bytesRead);
+
 
                         // Close the FileOutputStream after writing the data
                         fileOutputStream.close();
@@ -81,7 +81,7 @@ public class Main {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Server Offline");
         }
     }
 }
